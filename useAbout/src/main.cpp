@@ -2,7 +2,7 @@
 
 int count;
 void timerInterrupt(HardwareTimer *)
-{ // Toggle pin. 10hz toogle --> 5Hz PWM
+{
   count++;
 }
 
@@ -21,7 +21,7 @@ void setup()
   pinMode(3, OUTPUT);
 
   MyTim->setMode(2, TIMER_OUTPUT_COMPARE); // In our case, channekFalling is configured but not really used. Nevertheless it would be possible to attach a callback to channel compare match.
-  MyTim->setOverflow(1000, HERTZ_FORMAT);  // 10 Hz
+  MyTim->setOverflow(1000, HERTZ_FORMAT);  // 1000 Hz
   MyTim->attachInterrupt(timerInterrupt);
   MyTim->resume();
   Serial.begin(9600);
@@ -29,6 +29,5 @@ void setup()
 
 void loop()
 {
-  /* Nothing to do all is done by hardware. Even no interrupt required. */
   Serial.println(count);
 }
