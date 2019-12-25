@@ -1,8 +1,11 @@
 #include <Arduino.h>
-
+#include"communication.h"
 int count;
+int monitoring;
+int data[10] = {0};
 void timerInterrupt(HardwareTimer *)
 {
+  monitoring++;
   count++;
 }
 
@@ -25,9 +28,32 @@ void setup()
   MyTim->attachInterrupt(timerInterrupt);
   MyTim->resume();
   Serial.begin(9600);
+  Serial3.begin(9600);
 }
 
 void loop()
 {
   Serial.println(count);
+  delay(400);
+}
+void serial3Event(){
+  static int No = 0;
+    int buff;
+    monitoring = 0;
+    buff = Serial4.read();
+    if (buff == 0x80)
+    {
+        No = 0;
+        data[No++] = 0x80;
+    }
+    else if (No > 0)
+    {
+        data[No++] = buff;
+        if (No > 8)
+        {
+            updataState(data);
+            No = 0;
+        }
+    }
+
 }
